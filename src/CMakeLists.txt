@@ -1,21 +1,36 @@
-cmake_minimum_required(VERSION 3.10)
-project(embrace)
+cmake_minimum_required(VERSION 3.13)
+project(embrace CXX)
 
-find_package(PkgConfig REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
+include(CTest)
+
 ## Build Description
 
-add_executable(embrace embrace.cpp)
+add_executable(embrace embrace.cpp config.cpp)
 
 ## Add dependencies
 
-pkg_check_modules(JSONC REQUIRED json-c)
+find_package(nlohmann_json 3.2.0 REQUIRED)
+target_link_libraries(embrace PRIVATE nlohmann_json::nlohmann_json)
 
-target_link_libraries(embrace ${JSONC_LIBRARIES})
-target_include_directories(embrace PUBLIC ${JSONC_INCLUDE_DIRS})
-target_compile_options(embrace PUBLIC ${JSONC_CFLAGS_OTHER})
+## Tests
+
+if(BUILD_TESTING)
+  enable_testing()
+
+  find_package(Catch2 REQUIRED)
+  include(Catch)
+
+  add_executable(test_unit
+    config.cpp
+    config_tests.cpp
+    )
+  target_link_libraries(test_unit Catch2::Catch2WithMain)
+
+  catch_discover_tests(test_unit)
+endif()
 
 ## Installation
 
