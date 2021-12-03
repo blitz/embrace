@@ -6,4 +6,6 @@
 
 {
   embrace = pkgs.callPackage ./build.nix {};
+
+  embraceStatic = pkgs.pkgsMusl.callPackage ./build.nix {};
 }
