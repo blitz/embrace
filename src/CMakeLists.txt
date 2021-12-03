@@ -6,6 +6,7 @@ set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 include(CTest)
 
+set(CMAKE_BUILD_TYPE Debug)
 ## Build Description
 
 add_executable(embrace embrace.cpp config.cpp)

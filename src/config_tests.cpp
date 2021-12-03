@@ -19,3 +19,7 @@ auto parse_string(std::string_view str)
 TEST_CASE("empty config file is rejected") {
   REQUIRE(std::holds_alternative<config_parse_error>(parse_string("")));
 }
+
+TEST_CASE("shebang line is ignored") {
+  REQUIRE(std::holds_alternative<config>(parse_string("#!/bin/foo\n{\"binary\": \"foo\"}\n")));
+}

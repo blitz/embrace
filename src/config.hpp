@@ -7,11 +7,8 @@
 using name_value = std::pair<std::string, std::string>;
 
 struct config {
-  /// The environment variables that need to be set as name/value pairs.
-  std::vector<name_value> env_set;
-
   /// The program that needs to be started. This must be a path to an executable file.
-  std::string program;
+  std::string binary;
 
   /// Any program arguments that need to be passed to `program` in addition to what's specified on the command
   /// line. These arguments precede arguments given on the command line.

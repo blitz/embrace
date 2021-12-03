@@ -14,6 +14,8 @@ pkgs.mkShell {
   nativeBuildInputs = with pkgs; [
     # Development Convenience
     ninja
+    cmakeCurses
+    gdb
 
     # Dependency Management
     niv
