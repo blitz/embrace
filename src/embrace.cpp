@@ -11,19 +11,28 @@ namespace {
 [[noreturn]] void execute(config const &cfg)
 {
   // Convert a vector of strings to a vector of char pointers.
-  std::vector<char *> c_program_args;
+  std::vector<char *> c_args;
 
-  c_program_args.reserve(cfg.program_args.size() + 1);
+  c_args.reserve(cfg.args.size() + 1);
 
-  for (auto &program_arg: cfg.program_args) {
+  for (auto &program_arg: cfg.args) {
     // Casting the const away to placate execv. It doesn't actually modify the string. *sigh*
-    c_program_args.push_back(const_cast<char *>(program_arg.c_str()));
+    c_args.push_back(const_cast<char *>(program_arg.c_str()));
   }
 
-  c_program_args.push_back(nullptr);
+  c_args.push_back(nullptr);
+
+  // Modify the environment.
+  for (auto const &[key, value]: cfg.env) {
+    if (setenv(key.c_str(), value.c_str(), true) != 0) {
+      std::cerr << "Failed to set environment variable '" << key << "' to '" << value << "': "
+                << strerror(errno) << "\n";
+      exit(EXIT_FAILURE);
+    }
+  }
 
   // Execute the binary.
-  int rc = execv(cfg.binary.c_str(), c_program_args.data());
+  int rc = execv(cfg.binary.c_str(), c_args.data());
 
   if (rc != 0) {
     std::cerr << "Failed to execute " << cfg.binary << ": " << strerror(errno) << "\n";
